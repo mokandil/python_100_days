@@ -7,40 +7,75 @@ current_dir = os.path.dirname(__file__)
 image_path = os.path.join(current_dir, "blank_states_img.gif")
 data_path = os.path.join(current_dir, "50_states.csv")
 
-screen = turtle.Screen()
-screen.title("US States Game")
-image = image_path
-screen.addshape(image)
-turtle.shape(image)
 
-states_data = pd.read_csv(data_path)
-states_list = states_data["state"].to_list()
+class Screen:
+    def __init__(self):
+        self.screen = turtle.Screen()
+        self.screen.title("US States Game")
+        self.image = image_path
+        self.screen.addshape(self.image)
+        turtle.shape(self.image)
 
-score = 0
-scoreboard = turtle.Turtle()
-scoreboard.hideturtle()
-scoreboard.penup()
-scoreboard.goto(0, 270)
-scoreboard.write(f"Score: {score}/{len(states_list)}", align="center", font=("Arial", 24, "normal"))
 
-while score < len(states_list):
-    answer_state = screen.textinput(title=f"{score}/{len(states_list)} States Correct",
-                                    prompt="What's another state's name?").title()
+class StateMap:
+    def __init__(self):
+        self.states_data = pd.read_csv(data_path)
+        self.states_list = self.states_data["state"].to_list()
 
-    if answer_state == "Exit":
-        break
-
-    if answer_state in states_list:
-        state_data = states_data[states_data["state"] == answer_state]
+    def get_state_data(self, state_name):
+        state_data = self.states_data[self.states_data["state"] == state_name]
         x = int(state_data["x"])
         y = int(state_data["y"])
-        state_name = turtle.Turtle()
-        state_name.hideturtle()
-        state_name.penup()
-        state_name.goto(x, y)
-        state_name.write(answer_state, align="center", font=("Arial", 12, "normal"))
-        score += 1
-        scoreboard.clear()
-        scoreboard.write(f"Score: {score}/{len(states_list)}", align="center", font=("Arial", 24, "normal"))
+        return (x, y)
 
-screen.exitonclick()
+
+class Scoreboard:
+    def __init__(self, total_states):
+        self.score = 0
+        self.total_states = total_states
+        self.scoreboard = turtle.Turtle()
+        self.scoreboard.hideturtle()
+        self.scoreboard.penup()
+        self.scoreboard.goto(0, 270)
+        self.update_scoreboard()
+
+    def update_scoreboard(self):
+        self.scoreboard.clear()
+        self.scoreboard.write(f"Score: {self.score}/{self.total_states}", align="center", font=("Arial", 24, "normal"))
+
+    def increase_score(self):
+        self.score += 1
+        self.update_scoreboard()
+
+
+class Game:
+    def __init__(self):
+        self.screen = Screen()
+        self.state_map = StateMap()
+        self.scoreboard = Scoreboard(len(self.state_map.states_list))
+        self.play_game()
+
+    def play_game(self):
+        while self.scoreboard.score < len(self.state_map.states_list):
+            answer_state = self.screen.screen.textinput(
+                title=f"{self.scoreboard.score}/{len(self.state_map.states_list)} States Correct",
+                prompt="What's another state's name?").title()
+
+            if answer_state == "Exit":
+                break
+
+            if answer_state in self.state_map.states_list:
+                x, y = self.state_map.get_state_data(answer_state)
+                state_name = turtle.Turtle()
+                state_name.hideturtle()
+                state_name.penup()
+                state_name.goto(x, y)
+                state_name.write(answer_state, align="center", font=("Arial", 12, "normal"))
+                self.scoreboard.increase_score()
+
+        self.screen.screen.exitonclick()
+
+
+if __name__ == "__main__":
+    game = Game()
+    game.play_game()
