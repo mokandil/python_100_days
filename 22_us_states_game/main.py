@@ -53,7 +53,7 @@ class Game:
         self.screen = Screen()
         self.state_map = StateMap()
         self.scoreboard = Scoreboard(len(self.state_map.states_list))
-        self.play_game()
+        # self.play_game()
 
     def play_game(self):
         while self.scoreboard.score < len(self.state_map.states_list):
