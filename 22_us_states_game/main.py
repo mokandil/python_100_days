@@ -8,6 +8,7 @@ image_path = os.path.join(current_dir, "blank_states_img.gif")
 data_path = os.path.join(current_dir, "50_states.csv")
 
 
+# a class to create the screen
 class Screen:
     def __init__(self):
         self.screen = turtle.Screen()
@@ -17,6 +18,7 @@ class Screen:
         turtle.shape(self.image)
 
 
+# a class to create the state map
 class StateMap:
     def __init__(self):
         self.states_data = pd.read_csv(data_path)
@@ -28,7 +30,7 @@ class StateMap:
         y = int(state_data["y"])
         return (x, y)
 
-
+# a class to create the scoreboard
 class Scoreboard:
     def __init__(self, total_states):
         self.score = 0
@@ -47,7 +49,7 @@ class Scoreboard:
         self.score += 1
         self.update_scoreboard()
 
-
+# a class to create the game
 class Game:
     def __init__(self):
         self.screen = Screen()
@@ -55,6 +57,7 @@ class Game:
         self.scoreboard = Scoreboard(len(self.state_map.states_list))
         # self.play_game()
 
+    # a method to play the game
     def play_game(self):
         while self.scoreboard.score < len(self.state_map.states_list):
             answer_state = self.screen.screen.textinput(
@@ -62,9 +65,9 @@ class Game:
                 prompt="What's another state's name?").title()
 
             if answer_state == "Exit":
-                break
+                self.game_over()
 
-            if answer_state in self.state_map.states_list:
+            elif answer_state in self.state_map.states_list:
                 x, y = self.state_map.get_state_data(answer_state)
                 state_name = turtle.Turtle()
                 state_name.hideturtle()
@@ -72,8 +75,14 @@ class Game:
                 state_name.goto(x, y)
                 state_name.write(answer_state, align="center", font=("Arial", 12, "normal"))
                 self.scoreboard.increase_score()
+            
+            else:
+                print("Not a valid state name")
 
-        self.screen.screen.exitonclick()
+    # a method to exit the game
+    def game_over(self):
+        self.screen.screen.bye()
+        turtle.bye()
 
 
 if __name__ == "__main__":
