@@ -1,0 +1,8 @@
+
+Dear <name> (<email>),
+
+You are cordially invited to a dinner party on <date>.
+Please let us know if you can make it.
+
+Sincerely,
+The Host
