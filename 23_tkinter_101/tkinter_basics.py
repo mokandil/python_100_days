@@ -1,35 +1,32 @@
 import tkinter as tk
 
-# Create the main window
+class App:
+    def __init__(self, master):
+        self.master = master
+        self.master.minsize(600, 400)
+        self.master.title("Simple GUI App")
+
+        # create label
+        self.label = tk.Label(master, text="Enter your name:")
+        self.label.pack()
+
+        # create entry field
+        self.entry = tk.Entry(master)
+        self.entry.pack()
+
+        # create button
+        self.button = tk.Button(master, text="Click me!", command=self.say_hello)
+        self.button.pack()
+
+    def say_hello(self):
+        name = self.entry.get()
+        message = f"Hello, {name}!"
+        self.label.config(text=message)
+
+
+# create app
 window = tk.Tk()
-# Set the title of the window
-window.title("My First GUI Program")
-# Set the size of the window
-window.minsize(width=500, height=300)
+app = App(window)
 
-# create a function to handle button clicks
-def button_clicked():
-    print("I got clicked!")
-    new_text = input.get()
-    label.config(text=new_text)
-
-
-# Create a label
-label = tk.Label(window, text="Hello World", font=("Arial", 24, "bold"))
-label.pack()  # Add the label to the window
-
-# Create a button
-button = tk.Button(window, text="Click Me", command=button_clicked)
-button.pack()  # Add the button to the window
-
-
-# create input field
-input = tk.Entry(window, width=20)
-input.pack()
-
-
-
-
-
-# Start the main event loop
+# start app
 window.mainloop()
